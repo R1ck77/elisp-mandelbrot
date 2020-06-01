@@ -15,6 +15,8 @@ If you resize your terminal and, after loading `mandelbrot-4x.el` you run this L
 you'll probably get something like this: 
 
 ![Mandelbrot, second  draft](https://raw.githubusercontent.com/R1ck77/elisp-mandelbrot/master/images/mehndelbrot.png)
+
+(your mileage will vary depending on the fonts and terminal used: if characters have extra spaces between them, the result will be awful-er).
     
 
 

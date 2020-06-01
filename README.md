@@ -6,15 +6,15 @@ Also, I'm itching to carefree write some LISP code, without expectations of big 
 
 ### Status
 
-It's horribly slow, not interactive and statically configured, but it sort of works.
+It (purposely) doesn't exploit vertical simmetry, it's quite slow and it always render the same region, but it sort of works and uses utf-8 characters to increase the resolution.
 
-If you resize your terminal and, after loading `mandelbrot-basic.el` you run this LISP bit:
+If you resize your terminal and, after loading `mandelbrot-4x.el` you run this LISP bit:
 
-    (mandelbrot/draw-simple)
+    (mandelbrot/draw-4x)
     
 you'll probably get something like this: 
 
-![Mandelbrot, first draft](https://raw.githubusercontent.com/R1ck77/elisp-mandelbrot/master/images/mandelbleah.png)
+![Mandelbrot, second  draft](https://raw.githubusercontent.com/R1ck77/elisp-mandelbrot/master/images/mehndelbrot.png)
     
 
 

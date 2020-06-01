@@ -23,4 +23,19 @@
               :to-equal '(3 . 2)))
     (it "computes the c=0 case correctly"
       (expect (mandelbrot/f '(3 . 2) '(0 . 0))
-              :to-equal '(5 . 12)))))
+              :to-equal '(5 . 12))))
+  (describe "mandelbrot/modulo-squared"
+    (it "computes the square of the length of the complex vector associated with a point"
+      (expect (mandelbrot/modulo-squared '(3 . 4))
+              :to-be 25)))
+  (describe "mandelbrot/escapedp"
+    (it "returns the correct value for values inside the frontier"
+      (expect (mandelbrot/escapedp '(8 . 10))
+              :to-be nil))
+    (it "returns the correct value for values outside the frontier"
+      (expect (mandelbrot/escapedp '(100 . 10))
+              :not :to-be nil)))
+  (describe "mandelbrot/insidep"
+    (it "returns true for c = 0"
+      (expect (mandelbrot/inside '(0 . 0))
+              :not :to-be nil))))

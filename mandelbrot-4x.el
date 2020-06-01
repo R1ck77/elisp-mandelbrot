@@ -7,10 +7,25 @@
 (defconst min-y -1)
 (defconst max-y 1)
 
-(defvar mandelbrot-basic-empty mandelbrot-empty)
-(defvar mandelbrot-basic-full mandelbrot-full-block)
+(defvar mandelbrot-advanced-characters
+  `((0 0 0 0) ,mandelbrot-empty
+    (1 0 0 0) ,mandelbrot-quadrant-upper-left
+    (0 1 0 0) ,mandelbrot-quadrant-upper-right
+    (1 1 0 0) ,mandelbrot-upper-half-block
+    (0 0 1 0) ,mandelbrot-quadrant-lower-left
+    (1 0 1 0) ,mandelbrot-left-half-block
+    (0 1 1 0) ,mandelbrot-quadrant-upper-right-and-lower-left
+    (1 1 1 0) ,mandelbrot-quadrant-upper-left-and-upper-right-and-lower-left
+    (0 0 0 1) ,mandelbrot-quadrant-lower-right
+    (1 0 0 1) ,mandelbrot-quadrant-upper-left-and-lower-right
+    (0 1 0 1) ,mandelbrot-right-half-block
+    (1 1 0 1) ,mandelbrot-quadrant-upper-left-and-upper-right-and-lower-right
+    (0 0 1 1) ,mandelbrot-lower-half-block
+    (1 0 1 1) ,mandelbrot-quadrant-upper-left-and-lower-left-and-lower-right
+    (0 1 1 1) ,mandelbrot-quadrant-upper-right-and-lower-left-and-lower-right
+    (1 1 1 1) ,mandelbrot-full-block))
 
-(defconst mandelbrot-basic-name "*Mandelbrot*")
+(defconst mandelbrot-advanced-name "*Mandelbrot*")
 
 (defun mandelbrot/clear-buffer! (name)
   (let ((buffer (get-buffer-create name)))
@@ -36,7 +51,7 @@
 
 ;; TODO/FIXME test this as an exercise
 (defun mandelbrot/draw-simple ()
-  (mandelbrot/clear-buffer! mandelbrot-basic-name)
+  (mandelbrot/clear-buffer! mandelbrot-advanced-name)
   (goto-char (point-min))
   (message (format "The window is %d x %d" (window-body-width) (window-body-height)))
   (let ((line 1))

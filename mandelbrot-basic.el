@@ -6,6 +6,7 @@
 (defconst min-y -1)
 (defconst max-y 1)
 
+;;; TODO/FIXME move in another file
 (defvar empty " ")
 (defvar quadrant-upper-left "▘")
 (defvar quadrant-upper-right "▝")
@@ -23,22 +24,27 @@
 (defvar quadrant-upper-right-and-lower-left-and-lower-right "▟")
 (defvar full-block "█")
 
-(defvar advanced '((0 0 0 0) empty
-                   (1 0 0 0) quadrant-upper-left
-                   (0 1 0 0) quadrant-upper-right
-                   (1 1 0 0) upper-half-block
-                   (0 0 1 0) quadrant-lower-left
-                   (1 0 1 0) left-half-block
-                   (0 1 1 0) quadrant-upper-right-and-lower-left
-                   (1 1 1 0) quadrant-upper-left-and-upper-right-and-lower-left
-                   (0 0 0 1) quadrant-lower-right
-                   (1 0 0 1) quadrant-upper-left-and-lower-right
-                   (0 1 0 1) right-half-block
-                   (1 1 0 1) quadrant-upper-left-and-upper-right-and-lower-right
-                   (0 0 1 1) lower-half-block
-                   (1 0 1 1) quadrant-upper-left-and-lower-left-and-lower-right
-                   (0 1 1 1) quadrant-upper-right-and-lower-left-and-lower-right
-                   (1 1 1 1) full-block))
+(defvar mandelbrot-basic-empty empty)
+(defvar mandelbrot-basic-full full-block)
+
+
+(defvar mandelbrot-advanced-characters
+  `((0 0 0 0) ,empty
+    (1 0 0 0) ,quadrant-upper-left
+    (0 1 0 0) ,quadrant-upper-right
+    (1 1 0 0) ,upper-half-block
+    (0 0 1 0) ,quadrant-lower-left
+    (1 0 1 0) ,left-half-block
+    (0 1 1 0) ,quadrant-upper-right-and-lower-left
+    (1 1 1 0) ,quadrant-upper-left-and-upper-right-and-lower-left
+    (0 0 0 1) ,quadrant-lower-right
+    (1 0 0 1) ,quadrant-upper-left-and-lower-right
+    (0 1 0 1) ,right-half-block
+    (1 1 0 1) ,quadrant-upper-left-and-upper-right-and-lower-right
+    (0 0 1 1) ,lower-half-block
+    (1 0 1 1) ,quadrant-upper-left-and-lower-left-and-lower-right
+    (0 1 1 1) ,quadrant-upper-right-and-lower-left-and-lower-right
+    (1 1 1 1) ,full-block))
 
 (defconst mandelbrot-basic-name "*Mandelbrot*")
 
@@ -54,7 +60,7 @@
 
 (defun mandelbrot/draw-point! (y row max-row)
   (let ((x (mandelbrot/convert-coordinate row max-row min-x max-x)))
-    (insert (if (mandelbrot/insidep (cons x y)) "x" "."))))
+    (insert (if (mandelbrot/insidep (cons x y)) mandelbrot-basic-full mandelbrot-basic-empty))))
 
 (defun mandelbrot/draw-line! (line max-line)
   (let ((y (mandelbrot/convert-coordinate line max-line min-y max-y))

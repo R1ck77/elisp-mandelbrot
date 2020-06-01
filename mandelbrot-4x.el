@@ -37,27 +37,41 @@
   "Transform linearly p from [1, p-max] to [min-v, max-v]"
   (float (+ (* (/ (- p 1) (- p-max 1.0)) (- (float max-v) min-v)) min-v)))
 
-(defun mandelbrot/draw-point! (y row max-row)
-  (let ((x (mandelbrot/convert-coordinate row max-row min-x max-x)))
-    (insert (if (mandelbrot/insidep (cons x y)) mandelbrot-basic-full mandelbrot-basic-empty))))
+(defun mandelbrot/convert-to-map-key (value)
+  "Convert the interations/nil values into elements of the advanced characters lists"
+  (if value 1 0))
 
-(defun mandelbrot/draw-line! (line max-line)
+(defun mandelbrot/compute-quad (y y+1 row max-row)
+  (let ((x (mandelbrot/convert-coordinate row max-row min-x max-x))
+        (x+1 (mandelbrot/convert-coordinate (+ row 0.5) max-row min-x max-x)))
+    (--map (mandelbrot/convert-to-map-key it)
+           (list (mandelbrot/insidep (cons x y))
+                 (mandelbrot/insidep (cons x+1 y))
+                 (mandelbrot/insidep (cons x y+1))
+                 (mandelbrot/insidep (cons x+1 y+1))))))
+
+(defun mandelbrot/draw-quad! (y y+1 row max-row)
+  (let ((result (mandelbrot/compute-quad y y+1 row max-row)))
+    (message "Result: %s" result)
+    (insert (lax-plist-get mandelbrot-advanced-characters result))))
+
+(defun mandelbrot/draw-4x-line! (line max-line)
   (let ((y (mandelbrot/convert-coordinate line max-line min-y max-y))
+        (y+1 (mandelbrot/convert-coordinate (+ line 0.5) max-line min-y max-y))
         (row 1))
     (while (< row (window-body-width))
-      (mandelbrot/draw-point! y row (window-body-width))
-      (redisplay)
+      (mandelbrot/draw-quad!  y y+1 row (window-body-width))
       (setq row (1+ row)))))
 
-;; TODO/FIXME test this as an exercise
-(defun mandelbrot/draw-simple ()
+(defun mandelbrot/draw-4x ()
   (mandelbrot/clear-buffer! mandelbrot-advanced-name)
   (goto-char (point-min))
   (message (format "The window is %d x %d" (window-body-width) (window-body-height)))
   (let ((line 1))
     (while (< line (window-body-height))
-      (mandelbrot/draw-line! line (window-body-height))
+      (mandelbrot/draw-4x-line! line (window-body-height))
       (insert "\n")
+      (redisplay)
       (setq line (1+ line)))))
 
 

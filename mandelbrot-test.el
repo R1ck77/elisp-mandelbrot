@@ -30,7 +30,7 @@
               :to-be 25)))
   (describe "mandelbrot/escapedp"
     (it "returns the correct value for values inside the frontier"
-      (expect (mandelbrot/escapedp '(8 . 10))
+      (expect (mandelbrot/escapedp '(1 . 1))
               :to-be nil))
     (it "returns the correct value for values outside the frontier"
       (expect (mandelbrot/escapedp '(100 . 10))

@@ -1,8 +1,8 @@
 (require 'dash)
 (require 'anaphora)
 
-(defconst mandelbrot-boundary 1e3) ; if |z|^2 > mandelbrot-boundary the value is considered outside the set
-(defconst mandelbrot-iterations 150)
+(defconst mandelbrot-boundary 4) ; if |z|^2 > mandelbrot-boundary the value is considered outside the set
+(defconst mandelbrot-iterations 200)
 
 (defun mandelbrot/+ (a b)
   (cons (+ (car a) (car b))
@@ -31,18 +31,23 @@
 (defun mandelbrot/escapedp (v)
   (> (mandelbrot/modulo-squared v) mandelbrot-boundary))
 
-(defun mandelbrot/compute-trajectory (c z iterations)
+(defun mandelbrot/compute-trajectory (c)
   "Returns nil if the point doesn't escape in 'mandelbrot-iterations', or the number of iterations it takes to escape otherwise
 
 There may be an (harmless) off by one on the number of iterations returned (not clear what the standard is on the matter)."
-  (let ((next-value (mandelbrot/f z c)))
-    (if (mandelbrot/escapedp next-value)
-        iterations
-      (if (< iterations mandelbrot-iterations)
-          (mandelbrot/compute-trajectory c next-value (1+ iterations))
-        nil))))
+  (let ((escaped)
+        (iterations 0)
+        (z '(0 . 0)))
+    (while (and (< iterations mandelbrot-iterations) (not escaped))
+      (let ((next-value (mandelbrot/f z c)))
+        (if (mandelbrot/escapedp next-value)
+            (setq escaped iterations)
+          (progn
+            (setq z next-value)
+            (setq iterations (1+ iterations))))))
+    escaped))
 
 (defun mandelbrot/insidep (c)
-  (not (mandelbrot/compute-trajectory c '(0 . 0) 0)))
+  (not (mandelbrot/compute-trajectory c)))
 
 (provide 'mandelbrot)

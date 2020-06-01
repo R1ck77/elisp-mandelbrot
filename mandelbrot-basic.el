@@ -31,8 +31,8 @@
         (row 1))
     (while (< row (window-body-width))
       (mandelbrot/draw-point! y row (window-body-width))
-      (redisplay)
-      (setq row (1+ row)))))
+      (setq row (1+ row))))
+  (redisplay))
 
 ;; TODO/FIXME test this as an exercise
 (defun mandelbrot/draw-simple ()

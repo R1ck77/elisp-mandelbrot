@@ -2,7 +2,7 @@
 (require 'anaphora)
 
 (defconst mandelbrot-boundary 1e3) ; if |z|^2 > mandelbrot-boundary the value is considered outside the set
-(defconst mandelbrot-iterations 100)
+(defconst mandelbrot-iterations 150)
 
 (defun mandelbrot/+ (a b)
   (cons (+ (car a) (car b))

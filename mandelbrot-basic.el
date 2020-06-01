@@ -6,6 +6,40 @@
 (defconst min-y -1)
 (defconst max-y 1)
 
+(defvar empty " ")
+(defvar quadrant-upper-left "▘")
+(defvar quadrant-upper-right "▝")
+(defvar upper-half-block "▀")
+(defvar quadrant-lower-left  "▖")
+(defvar left-half-block "▌")
+(defvar quadrant-upper-right-and-lower-left "▞")
+(defvar quadrant-upper-left-and-upper-right-and-lower-left "▛")
+(defvar quadrant-lower-right "▗")
+(defvar quadrant-upper-left-and-lower-right "▚")
+(defvar right-half-block "▐")
+(defvar quadrant-upper-left-and-upper-right-and-lower-right "▜")
+(defvar lower-half-block "▄")
+(defvar quadrant-upper-left-and-lower-left-and-lower-right "▙")
+(defvar quadrant-upper-right-and-lower-left-and-lower-right "▟")
+(defvar full-block "█")
+
+(defvar advanced '((0 0 0 0) empty
+                   (1 0 0 0) quadrant-upper-left
+                   (0 1 0 0) quadrant-upper-right
+                   (1 1 0 0) upper-half-block
+                   (0 0 1 0) quadrant-lower-left
+                   (1 0 1 0) left-half-block
+                   (0 1 1 0) quadrant-upper-right-and-lower-left
+                   (1 1 1 0) quadrant-upper-left-and-upper-right-and-lower-left
+                   (0 0 0 1) quadrant-lower-right
+                   (1 0 0 1) quadrant-upper-left-and-lower-right
+                   (0 1 0 1) right-half-block
+                   (1 1 0 1) quadrant-upper-left-and-upper-right-and-lower-right
+                   (0 0 1 1) lower-half-block
+                   (1 0 1 1) quadrant-upper-left-and-lower-left-and-lower-right
+                   (0 1 1 1) quadrant-upper-right-and-lower-left-and-lower-right
+                   (1 1 1 1) full-block))
+
 (defconst mandelbrot-basic-name "*Mandelbrot*")
 
 (defun mandelbrot/clear-buffer! (name)

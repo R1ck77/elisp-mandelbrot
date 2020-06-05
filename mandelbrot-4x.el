@@ -23,14 +23,6 @@
     (0 1 1 1) ,mandelbrot-quadrant-upper-right-and-lower-left-and-lower-right
     (1 1 1 1) ,mandelbrot-full-block))
 
-(defconst mandelbrot-advanced-name "*Mandelbrot*")
-
-(defun mandelbrot/clear-buffer! (name)
-  (let ((buffer (get-buffer-create name)))
-    (switch-to-buffer buffer)
-    (erase-buffer)
-    buffer))
-
 (defun mandelbrot/convert-coordinate (p p-max min-v max-v)
   "Transform linearly p from [1, p-max] to [min-v, max-v]"
   (float (+ (* (/ (- p 1) (- p-max 1.0)) (- (float max-v) min-v)) min-v)))
@@ -65,7 +57,6 @@
         (setq row (1+ row))))))
 
 (defun mandelbrot/draw-4x ()
-  (mandelbrot/clear-buffer! mandelbrot-advanced-name)
   (goto-char (point-min))
   (message (format "The window is %d x %d" (window-body-width) (window-body-height)))
   (save-excursion

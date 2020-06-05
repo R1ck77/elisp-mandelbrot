@@ -33,7 +33,11 @@
 (defun mandelbrot/print-coordinate ()
   (interactive)
   "Print the coordinate at point"
-  (message "Not yet implemented"))
+  (let* ((column (line-number-at-pos))
+         (row (1+ (- (point) (line-beginning-position))))
+         (coordinates (mandelbrot/convert-coordinates column row)))
+    (message "The position is: %s,%s" (car coordinates) (cdr coordinates))
+    ))
 
 (defun mandelbrot-mode ()
   "Enter Mandelbrot mode"

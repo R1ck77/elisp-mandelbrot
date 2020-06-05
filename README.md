@@ -2,21 +2,33 @@
 
 I'm curious to know how the Mandelbrot set would look in a text window, possibly with some cleverness in the representation (cfr the Wikipedia page for "Mandelbrot set" where the first Mandelbrot set image, as a 80x25 text image, is presented).
 
-Also, I'm itching to carefree write some LISP code, without expectations of big projects involved.
+Also, I'm itching to write some LISP code carefree, without expectations or any big projects involved.
 
 ### Status
 
-It (purposely) doesn't exploit vertical simmetry, it's quite slow and it always render the same region, but it sort of works and uses utf-8 characters to increase the resolution.
+If you load and evaluate `mandelbrot.el` and then execute
 
-If you resize your terminal and, after loading `mandelbrot-4x.el` you run this LISP bit:
-
-    (mandelbrot/draw-4x)
+    M-x mandelbrot-mode
     
 you'll probably get something like this: 
 
 ![Mandelbrot, second  draft](https://raw.githubusercontent.com/R1ck77/elisp-mandelbrot/master/images/mehndelbrot.png)
 
-(your mileage will vary depending on the fonts and terminal used: if characters have extra spaces between them, the result will be awful-er).
+but your mileage will vary, depending on the fonts and terminal used.
+
+The terminal version of Emacs does a pretty decent job, where the windowed one looks awful-er.
+
+### Limitations
+
+It's a Mandelbrot program that uses ELISP for computations and draws the result in a text windows, how many more limitations do you want? xD
+
+The code doesn't employ any neat trick (like symmetry exploitation) to make the calculations faster.
+
+### TODO
+
+I'm not going to over-engineer this thing, but I still hope to add a couple of commands to zoom on the set and change the number of computations.
+    
+
     
 
 

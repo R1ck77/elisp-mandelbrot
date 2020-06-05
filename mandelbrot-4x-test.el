@@ -1,7 +1,7 @@
 (require 'buttercup)
-(require 'mandelbrot-basic)
+(require 'mandelbrot-4x)
 
-(describe "mandelbrot-basic"
+(describe "mandelbrot-4x"
   (describe "mandelbrot-convert-coordinate"
     (it "converts 1 in [1:12] to [3:7] correctly"
       (expect (mandelbrot/convert-coordinate 1 12 3 7)

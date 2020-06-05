@@ -77,4 +77,4 @@
        (setq line (1+ line))))))
 
 
-(provide 'mandelbrot-basic)
+(provide 'mandelbrot-4x)

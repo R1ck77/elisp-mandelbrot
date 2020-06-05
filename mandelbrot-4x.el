@@ -68,12 +68,13 @@
   (mandelbrot/clear-buffer! mandelbrot-advanced-name)
   (goto-char (point-min))
   (message (format "The window is %d x %d" (window-body-width) (window-body-height)))
-  (let ((line 1))
-    (while (<= line (window-body-height))
-      (mandelbrot/draw-4x-line! line (window-body-height))
-      (insert "\n")
-      (redisplay)
-      (setq line (1+ line)))))
+  (save-excursion
+   (let ((line 1))
+     (while (<= line (window-body-height))
+       (mandelbrot/draw-4x-line! line (window-body-height))
+       (insert "\n")
+       (redisplay)
+       (setq line (1+ line))))))
 
 
 (provide 'mandelbrot-basic)

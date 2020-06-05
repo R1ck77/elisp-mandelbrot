@@ -50,4 +50,4 @@ There may be an (harmless) off by one on the number of iterations returned (not 
 (defun mandelbrot/insidep (c)
   (not (mandelbrot/compute-trajectory c)))
 
-(provide 'mandelbrot)
+(provide 'mandelbrot-math)

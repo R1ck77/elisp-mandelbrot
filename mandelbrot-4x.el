@@ -1,4 +1,4 @@
-(require 'mandelbrot)
+(require 'mandelbrot-math)
 (require 'mandelbrot-utf-8)
 (require 'cl)
 

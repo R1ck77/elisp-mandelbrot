@@ -1,7 +1,7 @@
 (require 'buttercup)
-(require 'mandelbrot)
+(require 'mandelbrot-math)
 
-(describe "mandelbrot"
+(describe "mandelbrot-math"
   (describe "mandelbrot/+"
     (it "sums two complex numbers correctly"
       (expect (mandelbrot/+ '(1 . 2) '(4 . 5))

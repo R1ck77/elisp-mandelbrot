@@ -10,7 +10,10 @@
 (when (not mandelbrot-mode-map)
   (setq mandelbrot-mode-map (make-keymap))
   (define-key mandelbrot-mode-map (kbd "r") #'mandelbrot/redraw)
-  (define-key mandelbrot-mode-map (kbd "p") #'mandelbrot/print-coordinate))
+  (define-key mandelbrot-mode-map (kbd "R") #'mandelbrot/reset)
+  (define-key mandelbrot-mode-map (kbd "p") #'mandelbrot/print-coordinate)
+  (define-key mandelbrot-mode-map (kbd "C-@") #'mandelbrot/mark-start)
+  (define-key mandelbrot-mode-map (kbd "z") #'mandelbrot/zoom))
 
 (defmacro mandelbrot/with-read-only-disabled (&rest forms)
   `(let ((buffer-read-only nil))
@@ -23,6 +26,12 @@
      (erase-buffer))
     buffer))
 
+(defun mandelbrot/reset ()
+  (interactive)
+  "Return to the original zoom level for the plot"
+  (setq mandelbrot-region mandelbrot-initial-boundaries)
+  (mandelbrot/redraw))
+
 (defun mandelbrot/redraw ()
   (interactive)
   "Redraw mandelbrot in the current buffer"
@@ -30,14 +39,38 @@
    (erase-buffer)
    (mandelbrot/draw-4x)))
 
+(defvar mandelbrot-start-position)
+(make-variable-buffer-local 'mandelbrot-start-position)
+(defun mandelbrot/mark-start ()
+  (interactive)
+  (setq mandelbrot-start-position (point))
+  (message "Mark start"))
+
+(defun mandelbrot/get-current-x-y ()
+    (let ((row (line-number-at-pos))
+         (column (1+ (- (point) (line-beginning-position)))))
+      (mandelbrot/column-row-to-x-y column row)))
+
 (defun mandelbrot/print-coordinate ()
   (interactive)
   "Print the coordinate at point"
-  (let* ((column (line-number-at-pos))
-         (row (1+ (- (point) (line-beginning-position))))
-         (coordinates (mandelbrot/convert-coordinates column row)))
-    (message "The position is: %s,%s" (car coordinates) (cdr coordinates))
-    ))
+  (let ((coordinates (mandelbrot/get-current-x-y)))
+    (message "The position is: %s,%s" (car coordinates) (cdr coordinates))))
+
+(defun mandelbrot/zoom ()
+  (interactive)
+  "Zoom in on the region"
+  (save-excursion
+    ;;; TODO/FIXME reorder points!
+    (let ((start-position)
+          (end-position))
+      (setq end-position (mandelbrot/get-current-x-y))
+      (goto-char mandelbrot-start-position)
+      (setq start-position (mandelbrot/get-current-x-y))
+      (setq mandelbrot-region (list (car start-position) (car end-position)
+                                    (cdr start-position) (cdr end-position)))
+      (message "Zooming to: %s" mandelbrot-region)
+      (mandelbrot/redraw))))
 
 (defun mandelbrot-mode ()
   "Enter Mandelbrot mode"

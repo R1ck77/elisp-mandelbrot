@@ -2,7 +2,9 @@
 (require 'mandelbrot-utf-8)
 (require 'cl)
 
-(defvar mandelbrot-region '(-2 1 -1 1))
+(defconst mandelbrot-initial-boundaries '(-2 1 -1 1))
+
+(defvar mandelbrot-region mandelbrot-initial-boundaries)
 (make-variable-buffer-local 'mandelbrot-region)
 (defvar mandelbrot-limits nil)
 (make-variable-buffer-local 'mandelbrot-limits)
@@ -29,7 +31,7 @@
   "Transform linearly p from [1, p-max] to [min-v, max-v]"
   (float (+ (* (/ (- p 1) (- p-max 1.0)) (- (float max-v) min-v)) min-v)))
 
-(defun mandelbrot/convert-coordinates (column row)
+(defun mandelbrot/column-row-to-x-y (column row)
   (cons (mandelbrot/convert-coordinate column (car mandelbrot-limits) (car mandelbrot-region) (cadr mandelbrot-region))
         (mandelbrot/convert-coordinate row (cdr mandelbrot-limits) (elt mandelbrot-region 2) (elt mandelbrot-region 3))))
 
@@ -64,7 +66,6 @@
 
 (defun mandelbrot/draw-4x ()
   (goto-char (point-min))
-  (message (format "The window is %d x %d" (window-body-width) (window-body-height)))
   (save-excursion
     (setq mandelbrot-limits (cons (window-body-width)
                                   (window-body-height)))

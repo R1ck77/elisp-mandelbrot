@@ -9,8 +9,7 @@
   "Keymap for Mandelbrot mode")
 (when (not mandelbrot-mode-map)
   (setq mandelbrot-mode-map (make-keymap))
-  ;;;  (define-key )
-  )
+  (define-key mandelbrot-mode-map (kbd "r") #'mandelbrot/redraw))
 
 (defun mandelbrot/configure-canvas ()
   (let ((buffer (get-buffer-create mandelbrot-buffer-name)))
@@ -20,9 +19,14 @@
     buffer))
 
 (defun mandelbrot/redraw ()
+  (interactive)
   "Redraw mandelbrot in the current buffer"
+  (message (format "Read only: %s" buffer-read-only))
   (let ((buffer-read-only nil))
-    (mandelbrot/draw-4x)))
+    (erase-buffer)
+    (message (format "Read only: %s" buffer-read-only))
+    (mandelbrot/draw-4x))
+  (message (format "Read only: %s" buffer-read-only)))
 
 (defun mandelbrot-mode ()
   "Enter Mandelbrot mode"

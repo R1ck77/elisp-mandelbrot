@@ -1,21 +1,33 @@
-(require 'dash)
-(require 'anaphora)
+(require 'mandelbrot-math-lisp)
 
 (defconst mandelbrot-boundary 4) ; if |z|^2 > mandelbrot-boundary the value is considered outside the set
 
-(defun mandelbrot/+ (a b)
-  (cons (+ (car a) (car b))
-        (+ (cdr a) (cdr b))))
+(defvar mandelbrot-binary-library-loaded nil
+  "This variable is t if the binary library is compiled and can be loaded")
+
+
+(defun mandelbrot/load--library ()
+  (condition-case nil
+      (setq mandelbrot-binary-library-loaded (load-library "./libmandelbrot.so"))
+    ('error nil)))
+(mandelbrot/load--library)
+
+
+(fset 'mandelbrot/+ (if mandelbrot-binary-library-loaded
+                        #'mandelbrot-c/+
+                      #'mandelbrot-lisp/+))
 
 (defun mandelbrot/* (a b)
   (let ((ar (car a))
         (ai (cdr a))
         (br (car b))
         (bi (cdr b)))
-    (cons (- (* ar br)
-             (* ai bi))
-          (+ (* ar bi)
-             (* br ai)))))
+    (cons (float
+           (- (* ar br)
+              (* ai bi)))
+          (float
+           (+ (* ar bi)
+              (* br ai))))))
 
 (defun mandelbrot/sqr (a)
   (mandelbrot/* a a))
@@ -24,8 +36,9 @@
   (mandelbrot/+ (mandelbrot/sqr z) c))
 
 (defun mandelbrot/modulo-squared (v)
-  (+ (* (car v) (car v))
-     (* (cdr v) (cdr v))))
+  (float
+   (+ (* (car v) (car v))
+      (* (cdr v) (cdr v)))))
 
 (defun mandelbrot/escapedp (v)
   (> (mandelbrot/modulo-squared v) mandelbrot-boundary))

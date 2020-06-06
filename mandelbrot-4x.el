@@ -79,5 +79,4 @@
        (redisplay)
        (setq line (1+ line))))))
 
-
 (provide 'mandelbrot-4x)

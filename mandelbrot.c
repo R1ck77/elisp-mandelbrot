@@ -26,12 +26,17 @@ static void complex_add(complex_value *result, complex_value *a, complex_value *
   result->i = a->i + b->i;
 }
 
+static double extract_number_as_float(emacs_env *env, emacs_value v) {
+  emacs_value number_as_float = env->funcall(env, env->intern(env, "float"), 1, &v);
+  return env->extract_float(env, number_as_float);
+}
+
 static void extract_value(emacs_env *env, emacs_value in, complex_value *out)
 {
   emacs_value car = env->funcall(env, env->intern(env, "car"), 1, &in);
-  out->r = env->extract_float(env, car);
+  out->r = extract_number_as_float(env, car);
   emacs_value cdr = env->funcall(env, env->intern(env, "cdr"), 1, &in);
-  out->i = env->extract_float(env, cdr);
+  out->i = extract_number_as_float(env, cdr);
 }
 
 // TODO/FIXME how about memory?

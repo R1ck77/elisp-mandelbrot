@@ -37,14 +37,14 @@
               :not :to-be nil)))
   (describe "mandelbrot/insidep"
     (it "returns true for c = 0"
-      (expect (mandelbrot/insidep '(0 . 0))
+      (expect (mandelbrot/insidep '(0 . 0) 100)
               :not :to-be nil))
     (it "returns false for points outside the disk of radius 2"
-      (expect (mandelbrot/insidep '(2.1 . 0)) :to-be nil)
-      (expect (mandelbrot/insidep '(0 . 2.1)) :to-be nil)
-      (expect (mandelbrot/insidep '(-2.1 . 0)) :to-be nil)
-      (expect (mandelbrot/insidep '(0 . -2.1)) :to-be nil))
+      (expect (mandelbrot/insidep '(2.1 . 0) 100) :to-be nil)
+      (expect (mandelbrot/insidep '(0 . 2.1) 100) :to-be nil)
+      (expect (mandelbrot/insidep '(-2.1 . 0) 100) :to-be nil)
+      (expect (mandelbrot/insidep '(0 . -2.1) 100) :to-be nil))
     (it "is true for some special cases"
-      (expect (mandelbrot/insidep '(-1 . 0)) :not :to-be nil)
-      (expect (mandelbrot/insidep '(0 . 0.5)) :not :to-be nil)
-      (expect (mandelbrot/insidep '(0 . -0.5)) :not :to-be nil))))
+      (expect (mandelbrot/insidep '(-1 . 0) 100) :not :to-be nil)
+      (expect (mandelbrot/insidep '(0 . 0.5) 100) :not :to-be nil)
+      (expect (mandelbrot/insidep '(0 . -0.5) 100) :not :to-be nil))))

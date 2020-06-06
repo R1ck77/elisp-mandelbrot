@@ -28,21 +28,23 @@
     buffer))
 
 (defun mandelbrot/reset ()
+  "Reset the plot to the initial region"
   (interactive)
-  "Return to the original zoom level for the plot"
   (setq mandelbrot-region mandelbrot-initial-boundaries)
   (mandelbrot/redraw))
 
 (defun mandelbrot/redraw ()
+  "Redraw mandelbrot in the current buffer"  
   (interactive)
-  "Redraw mandelbrot in the current buffer"
   (mandelbrot/with-read-only-disabled   
    (erase-buffer)
    (mandelbrot/draw-4x)))
 
+;;; TODO/FIXME this is a mess
 (defvar mandelbrot-start-position)
 (make-variable-buffer-local 'mandelbrot-start-position)
 (defun mandelbrot/mark-start ()
+  "Set the starting point for a zoom area"
   (interactive)
   (setq mandelbrot-start-position (point))
   (message "Mark start"))
@@ -53,14 +55,14 @@
       (mandelbrot/column-row-to-x-y column row)))
 
 (defun mandelbrot/print-coordinate ()
-  (interactive)
   "Print the coordinate at point"
+  (interactive)
   (let ((coordinates (mandelbrot/get-current-x-y)))
     (message "The position is: %s,%s" (car coordinates) (cdr coordinates))))
 
 (defun mandelbrot/zoom ()
-  (interactive)
   "Zoom in on the region"
+  (interactive)
   (save-excursion
     ;;; TODO/FIXME reorder points!
     (let ((start-position)
@@ -74,13 +76,15 @@
       (mandelbrot/redraw))))
 
 (defun mandelbrot/change-iterations (maximum-iterations)
-  (interactive "NIterations: ")
   "Update the number of iterations"
+  (interactive "NIterations: ")
   (setq mandelbrot-iterations maximum-iterations)
   (mandelbrot/redraw))
 
 (defun mandelbrot-mode ()
-  "Enter Mandelbrot mode"
+  "Enter Mandelbrot mode
+
+\\{mandelbrot-mode-map}"
   (interactive)
   (mandelbrot/configure-canvas)
   (kill-all-local-variables)

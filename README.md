@@ -28,7 +28,13 @@ The code doesn't employ any neat trick (like symmetry exploitation) to make the 
 
 ### TODO
 
-I'd like to toy with dynamic modules and provide a C-like quick mandelbrot alternative.
+I'd like to toy with dynamic modules and provide a C-like quick mandelbrot alternative. Also, I'd like to explore different levels of integration with C, from the lowest level (which I expect to provide no benefit) to the highest:
+
+- C for Complex addition and multiplication only
+- C for mandelbrot computations
+- C for trajectory computation
+
+where I expect the first solution to be slower, the second to be around the break-even point and the third to be faster.
 
 I'd like to mark the region the user is zooming in with color, also the zoom command is a bit bugged, as it allows to flip the graph (tolerated atm, but not intentional…).
 

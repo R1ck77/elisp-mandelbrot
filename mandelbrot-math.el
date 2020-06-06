@@ -20,8 +20,10 @@
                         #'mandelbrot-c/sqr
                       #'mandelbrot-lisp/sqr))
 
-(defun mandelbrot/f (z c)
-  (mandelbrot/+ (mandelbrot/sqr z) c))
+;;; This fset overrides the previous two
+(fset 'mandelbrot/f (if mandelbrot-binary-library-loaded
+                        #'mandelbrot-c/f
+                      #'mandelbrot-lisp/f))
 
 (defun mandelbrot/modulo-squared (v)
   (float

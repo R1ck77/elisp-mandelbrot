@@ -23,5 +23,9 @@
 (defun mandelbrot-lisp/sqr (a)
   (mandelbrot/* a a))
 
+(defun mandelbrot-lisp/f (z c)
+  (mandelbrot-lisp/+ (mandelbrot-lisp/sqr z) c))
+
+
 
 (provide 'mandelbrot-math-lisp)

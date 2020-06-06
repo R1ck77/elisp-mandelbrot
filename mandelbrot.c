@@ -16,10 +16,6 @@ static void complex_sqr(complex_value *result, complex_value *a) {
   result->i = 2 * a->r * a->i;
 }
 
-static double complex_modulo_squared(complex_value *a) {
-  return (a->r * a->r) + (a->i * a->i);
-}
-
 static void complex_add(complex_value *result, complex_value *a, complex_value *b)
 {
   result->r = a->r + b->r;
@@ -125,10 +121,35 @@ static void create_mandelbrot_f(emacs_env *env)
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 }
 
+static double complex_modulo_squared(complex_value *a) {
+  return (a->r * a->r) + (a->i * a->i);
+}
+
+static emacs_value mandelbrot_modulo_squared(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data)
+{
+  (void) data;
+  (void) nargs;
+  
+  complex_value a;
+  extract_value(env, args[0], &a);
+  
+  double result = complex_modulo_squared(&a);
+
+  return env->make_float(env, result);
+}
+
+static void create_mandelbrot_modulo_squared(emacs_env *env)
+{
+  emacs_value args[2];
+  args[0] = env->intern(env, "mandelbrot-c/modulo-squared");
+  args[1] = env->make_function(env, 1, 1, mandelbrot_modulo_squared, "|z|^2. Accepts one cons cells as input.", NULL);  
+  env->funcall(env, env->intern(env, "defalias"), 2, args);
+}
 
 int emacs_module_init(struct emacs_runtime *runtime) {
   create_mandelbrot_complex_add(runtime->get_environment(runtime));
   create_mandelbrot_complex_sqr(runtime->get_environment(runtime));
   create_mandelbrot_f(runtime->get_environment(runtime));
+  create_mandelbrot_modulo_squared(runtime->get_environment(runtime));
   return 0;
 }

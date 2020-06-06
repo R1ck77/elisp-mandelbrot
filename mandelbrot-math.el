@@ -25,10 +25,9 @@
                         #'mandelbrot-c/f
                       #'mandelbrot-lisp/f))
 
-(defun mandelbrot/modulo-squared (v)
-  (float
-   (+ (* (car v) (car v))
-      (* (cdr v) (cdr v)))))
+(fset 'mandelbrot/modulo-squared (if mandelbrot-binary-library-loaded
+                                     #'mandelbrot-c/modulo-squared
+                                   #'mandelbrot-lisp/modulo-squared))
 
 (defun mandelbrot/escapedp (v)
   (> (mandelbrot/modulo-squared v) mandelbrot-boundary))

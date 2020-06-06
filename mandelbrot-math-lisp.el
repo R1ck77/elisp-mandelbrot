@@ -26,6 +26,12 @@
 (defun mandelbrot-lisp/f (z c)
   (mandelbrot-lisp/+ (mandelbrot-lisp/sqr z) c))
 
+(defun mandelbrot-lisp/modulo-squared (v)
+  (float
+   (+ (* (car v) (car v))
+      (* (cdr v) (cdr v)))))
+
+
 
 
 (provide 'mandelbrot-math-lisp)

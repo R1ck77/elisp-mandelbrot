@@ -16,7 +16,9 @@ you'll probably get something like this:
 
 but your mileage will vary, depending on the fonts and terminal used.
 
-The terminal version of Emacs does a pretty decent job, where the windowed one looks awful-er.
+The terminal version of Emacs does a pretty decent job, where the windowed one looks awful-er due to characters spacing.
+
+The major mode has a number of simple commands to zoom on a region (C-space to mark the start of the region, then z), change the maximum number of iterations (i), redraw (r) or reset to the initial region (R).
 
 ### Limitations
 
@@ -26,8 +28,12 @@ The code doesn't employ any neat trick (like symmetry exploitation) to make the 
 
 ### TODO
 
-I'm not going to over-engineer this thing, but I still hope to add a couple of commands to zoom on the set and change the number of computations.
-    
+I'd like to toy with dynamic modules and provide a C-like quick mandelbrot alternative.
+
+I'd like to mark the region the user is zooming in with color, also the zoom command is a bit bugged, as it allows to flip the graph (tolerated atm, but not intentional…).
+
+Showing the current maximum number of iterations during query and offering the current value as default may also be nice.
+
 
     
 

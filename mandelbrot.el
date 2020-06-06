@@ -13,7 +13,8 @@
   (define-key mandelbrot-mode-map (kbd "R") #'mandelbrot/reset)
   (define-key mandelbrot-mode-map (kbd "p") #'mandelbrot/print-coordinate)
   (define-key mandelbrot-mode-map (kbd "C-@") #'mandelbrot/mark-start)
-  (define-key mandelbrot-mode-map (kbd "z") #'mandelbrot/zoom))
+  (define-key mandelbrot-mode-map (kbd "z") #'mandelbrot/zoom)
+  (define-key mandelbrot-mode-map (kbd "i") #'mandelbrot/change-iterations))
 
 (defmacro mandelbrot/with-read-only-disabled (&rest forms)
   `(let ((buffer-read-only nil))
@@ -71,6 +72,12 @@
                                     (cdr start-position) (cdr end-position)))
       (message "Zooming to: %s" mandelbrot-region)
       (mandelbrot/redraw))))
+
+(defun mandelbrot/change-iterations (maximum-iterations)
+  (interactive "NIterations: ")
+  "Update the number of iterations"
+  (setq mandelbrot-iterations maximum-iterations)
+  (mandelbrot/redraw))
 
 (defun mandelbrot-mode ()
   "Enter Mandelbrot mode"

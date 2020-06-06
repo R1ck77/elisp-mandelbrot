@@ -8,6 +8,9 @@
 (make-variable-buffer-local 'mandelbrot-region)
 (defvar mandelbrot-limits nil)
 (make-variable-buffer-local 'mandelbrot-limits)
+(defvar mandelbrot-iterations 200)
+(make-variable-buffer-local 'mandelbrot-iterations)
+
 
 (defvar mandelbrot-advanced-characters
   `((0 0 0 0) ,mandelbrot-empty
@@ -45,10 +48,10 @@
     (let ((x (mandelbrot/convert-coordinate row max-row min-x max-x))
                 (x+1 (mandelbrot/convert-coordinate (+ row 0.5) max-row min-x max-x)))
             (--map (mandelbrot/convert-to-map-key it)
-                   (list (mandelbrot/insidep (cons x y))
-                         (mandelbrot/insidep (cons x+1 y))
-                         (mandelbrot/insidep (cons x y+1))
-                         (mandelbrot/insidep (cons x+1 y+1)))))))
+                   (list (mandelbrot/insidep (cons x y) mandelbrot-iterations)
+                         (mandelbrot/insidep (cons x+1 y) mandelbrot-iterations)
+                         (mandelbrot/insidep (cons x y+1) mandelbrot-iterations)
+                         (mandelbrot/insidep (cons x+1 y+1) mandelbrot-iterations))))))
 
 (defun mandelbrot/draw-quad! (y y+1 row max-row)
   (let ((result (mandelbrot/compute-quad y y+1 row max-row)))

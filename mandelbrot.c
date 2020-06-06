@@ -11,7 +11,7 @@ typedef struct {
 } complex_value;
 
 
-static void complex_square(complex_value *result, complex_value *a) {
+static void complex_sqr(complex_value *result, complex_value *a) {
   result->r = a->r * a->r - a->i * a->i;
   result->i = 2 * a->r * a->i;
 }
@@ -63,11 +63,40 @@ static void create_mandelbrot_complex_add(emacs_env *env)
 {
   emacs_value args[2];
   args[0] = env->intern(env, "mandelbrot-c/+");
-  args[1] = env->make_function(env, 2, 2, mandelbrot_complex_add, "Complex addition. Accepts 2 cons cells as the complex numbers.", NULL);  
+  args[1] = env->make_function(env, 2, 2, mandelbrot_complex_add, "Addition in complex space. Accepts two cons cells as input.", NULL);  
+  env->funcall(env, env->intern(env, "defalias"), 2, args);
+}
+
+
+// TODO/FIXME not DRY at all!!
+static emacs_value mandelbrot_complex_sqr(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data)
+{
+  (void) data;
+  (void) nargs;
+  
+  complex_value a;
+  extract_value(env, args[0], &a);
+  complex_value cresult;
+  
+  complex_sqr(&cresult, &a);
+
+  emacs_value results[2];
+  results[0] = env->make_float(env, cresult.r);
+  results[1] = env->make_float(env, cresult.i);
+
+  return env->funcall(env, env->intern(env, "cons"), 2, results);
+}
+
+static void create_mandelbrot_complex_sqr(emacs_env *env)
+{
+  emacs_value args[2];
+  args[0] = env->intern(env, "mandelbrot-c/sqr");
+  args[1] = env->make_function(env, 1, 1, mandelbrot_complex_sqr, "Square function in complex space. Accepts one cons cell as input.", NULL);  
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 }
 
 int emacs_module_init(struct emacs_runtime *runtime) {
   create_mandelbrot_complex_add(runtime->get_environment(runtime));
+  create_mandelbrot_complex_sqr(runtime->get_environment(runtime));
   return 0;
 }

@@ -8,4 +8,20 @@
   (cons (float (+ (car a) (car b)))
         (float (+ (cdr a) (cdr b)))))
 
+(defun mandelbrot/* (a b)
+  (let ((ar (car a))
+        (ai (cdr a))
+        (br (car b))
+        (bi (cdr b)))
+    (cons (float
+           (- (* ar br)
+              (* ai bi)))
+          (float
+           (+ (* ar bi)
+              (* br ai))))))
+
+(defun mandelbrot-lisp/sqr (a)
+  (mandelbrot/* a a))
+
+
 (provide 'mandelbrot-math-lisp)

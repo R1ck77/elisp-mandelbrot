@@ -12,25 +12,13 @@
     ('error nil)))
 (mandelbrot/load--library)
 
-
 (fset 'mandelbrot/+ (if mandelbrot-binary-library-loaded
                         #'mandelbrot-c/+
                       #'mandelbrot-lisp/+))
 
-(defun mandelbrot/* (a b)
-  (let ((ar (car a))
-        (ai (cdr a))
-        (br (car b))
-        (bi (cdr b)))
-    (cons (float
-           (- (* ar br)
-              (* ai bi)))
-          (float
-           (+ (* ar bi)
-              (* br ai))))))
-
-(defun mandelbrot/sqr (a)
-  (mandelbrot/* a a))
+(fset 'mandelbrot/sqr (if mandelbrot-binary-library-loaded
+                        #'mandelbrot-c/sqr
+                      #'mandelbrot-lisp/sqr))
 
 (defun mandelbrot/f (z c)
   (mandelbrot/+ (mandelbrot/sqr z) c))

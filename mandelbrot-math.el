@@ -29,26 +29,11 @@
                                      #'mandelbrot-c/modulo-squared
                                    #'mandelbrot-lisp/modulo-squared))
 
-(defun mandelbrot/escapedp (v)
-  (> (mandelbrot/modulo-squared v) mandelbrot-boundary))
+(defun mandelbrot/insidep-c-wrapper (c iterations)
+  (= (mandelbrot-c/compute-trajectory c iterations) -1))
 
-(defun mandelbrot/compute-trajectory (c maximum-iterations)
-  "Returns nil if the point doesn't escape in 'iterations', or the number of iterations it takes to escape otherwise
-
-There may be an (harmless) off by one on the number of iterations returned (not clear what the standard is on the matter)."
-  (let ((escaped)
-        (iterations 0)
-        (z '(0 . 0)))
-    (while (and (< iterations maximum-iterations) (not escaped))
-      (let ((next-value (mandelbrot/f z c)))
-        (if (mandelbrot/escapedp next-value)
-            (setq escaped iterations)
-          (progn
-            (setq z next-value)
-            (setq iterations (1+ iterations))))))
-    escaped))
-
-(defun mandelbrot/insidep (c iterations)
-  (not (mandelbrot/compute-trajectory c iterations)))
+(fset 'mandelbrot/insidep (if mandelbrot-binary-library-loaded
+                              #'mandelbrot/insidep-c-wrapper
+                            #'mandelbrot-lisp/insidep))
 
 (provide 'mandelbrot-math)

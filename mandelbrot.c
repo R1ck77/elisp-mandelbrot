@@ -146,10 +146,38 @@ static void create_mandelbrot_modulo_squared(emacs_env *env)
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 }
 
+static int compute_trajectory(complex_value *point, int max_iterations)
+{
+  return -1;
+}
+
+static emacs_value mandelbrot_compute_trajectory(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data)
+{
+  (void) data;
+  (void) nargs;
+  
+  complex_value c;
+  extract_value(env, args[0], &c);
+  int iterations = env->extract_integer(env, args[1]);
+
+  int result = compute_trajectory(&c, iterations);
+
+  return env->make_integer(env, result);
+  
+}
+
+static void create_mandelbrot_compute_trajectory(emacs_env *env) {
+  emacs_value args[2];
+  args[0] = env->intern(env, "mandelbrot-c/compute-trajectory");
+  args[1] = env->make_function(env, 2, 2, mandelbrot_compute_trajectory, "Return -1 if after iterations the point is not escaped or the iteration when it did otherwise", NULL);
+  env->funcall(env, env->intern(env, "defalias"), 2, args);
+}
+
 int emacs_module_init(struct emacs_runtime *runtime) {
   create_mandelbrot_complex_add(runtime->get_environment(runtime));
   create_mandelbrot_complex_sqr(runtime->get_environment(runtime));
   create_mandelbrot_f(runtime->get_environment(runtime));
   create_mandelbrot_modulo_squared(runtime->get_environment(runtime));
+  create_mandelbrot_compute_trajectory(runtime->get_environment(runtime));
   return 0;
 }

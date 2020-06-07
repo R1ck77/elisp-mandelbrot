@@ -28,13 +28,6 @@
     (it "computes the square of the length of the complex vector associated with a point"
       (expect (mandelbrot/modulo-squared '(3 . 4))
               :to-equal 25.0)))
-  (describe "mandelbrot/escapedp"
-    (it "returns the correct value for values inside the frontier"
-      (expect (mandelbrot/escapedp '(1 . 1))
-              :to-be nil))
-    (it "returns the correct value for values outside the frontier"
-      (expect (mandelbrot/escapedp '(100 . 10))
-              :not :to-be nil)))
   (describe "mandelbrot/insidep"
     (it "returns true for c = 0"
       (expect (mandelbrot/insidep '(0 . 0) 100)

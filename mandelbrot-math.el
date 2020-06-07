@@ -30,7 +30,7 @@
                                    #'mandelbrot-lisp/modulo-squared))
 
 (defun mandelbrot/insidep-c-wrapper (c iterations)
-  (= (mandelbrot-c/compute-trajectory c iterations) -1))
+  (= (mandelbrot-c/compute-trajectory c iterations (float mandelbrot-boundary)) -1))
 
 (fset 'mandelbrot/insidep (if mandelbrot-binary-library-loaded
                               #'mandelbrot/insidep-c-wrapper

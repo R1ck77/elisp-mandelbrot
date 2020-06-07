@@ -8,7 +8,7 @@
 (make-variable-buffer-local 'mandelbrot-region)
 (defvar mandelbrot-limits nil)
 (make-variable-buffer-local 'mandelbrot-limits)
-(defvar mandelbrot-iterations 200)
+(defvar mandelbrot-iterations 2000)
 (make-variable-buffer-local 'mandelbrot-iterations)
 
 

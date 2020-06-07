@@ -14,7 +14,6 @@ libmandelbrot.so: mandelbrot.c
 timing:
 	/usr/bin/time emacs -nw -f package-initialize --eval "(progn (setq load-path (cons \".\" load-path)) (require 'mandelbrot) (mandelbrot-mode) (kill-emacs))"
 
-
 clean:
 	rm -f libmandelbrot.so
 

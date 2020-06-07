@@ -91,6 +91,12 @@ static void create_mandelbrot_complex_sqr(emacs_env *env)
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 }
 
+static void f(complex_value *result, complex_value *z, complex_value *c)
+{
+  complex_sqr(result, z);
+  complex_add(result, result, c);
+}
+
 static emacs_value mandelbrot_f(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data)
 {
   (void) data;
@@ -102,10 +108,8 @@ static emacs_value mandelbrot_f(emacs_env *env, ptrdiff_t nargs, emacs_value *ar
   extract_value(env, args[1], &c);
   
   complex_value cresult;
+  f(&cresult, &z, &c);
   
-  complex_sqr(&cresult, &z);
-  complex_add(&cresult, &cresult, &c);
-
   emacs_value results[2];
   results[0] = env->make_float(env, cresult.r);
   results[1] = env->make_float(env, cresult.i);
@@ -146,9 +150,31 @@ static void create_mandelbrot_modulo_squared(emacs_env *env)
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 }
 
-static int compute_trajectory(complex_value *point, int max_iterations)
+static int is_escaped(complex_value *v, double boundary) {
+  double square_modulo = complex_modulo_squared(v);
+  return square_modulo > boundary ? 1 : 0;    
+}
+
+static int compute_trajectory(complex_value *c, int max_iterations, double boundary)
 {
-  return -1;
+    int current_iteration = 0;
+    int escaped = -1;
+    complex_value z;
+    complex_value next_value;
+    
+    z.r = 0;
+    z.i = 0;
+    while((current_iteration < max_iterations) && escaped == -1) {
+      f(&next_value, &z, c);
+      if(is_escaped(&next_value, boundary) == 1) {
+        return current_iteration;
+      } else {
+        z.r = next_value.r;
+        z.i = next_value.i;
+        ++current_iteration;
+      }
+    }
+    return escaped;
 }
 
 static emacs_value mandelbrot_compute_trajectory(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data)
@@ -159,17 +185,17 @@ static emacs_value mandelbrot_compute_trajectory(emacs_env *env, ptrdiff_t nargs
   complex_value c;
   extract_value(env, args[0], &c);
   int iterations = env->extract_integer(env, args[1]);
+  double boundary = env->extract_float(env, args[2]);
 
-  int result = compute_trajectory(&c, iterations);
+  int result = compute_trajectory(&c, iterations, boundary);
 
-  return env->make_integer(env, result);
-  
+  return env->make_integer(env, result);  
 }
 
 static void create_mandelbrot_compute_trajectory(emacs_env *env) {
   emacs_value args[2];
   args[0] = env->intern(env, "mandelbrot-c/compute-trajectory");
-  args[1] = env->make_function(env, 2, 2, mandelbrot_compute_trajectory, "Return -1 if after iterations the point is not escaped or the iteration when it did otherwise", NULL);
+  args[1] = env->make_function(env, 3, 3, mandelbrot_compute_trajectory, "Return -1 if after iterations the point is not escaped or the iteration when it did otherwise\n\nAccepts the point, the maximum number of iterations before considering a point escaped, and the boundary value to consider as infinity (should be always 4).", NULL);
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 }
 

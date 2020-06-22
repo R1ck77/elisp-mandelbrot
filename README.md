@@ -64,7 +64,7 @@ The code doesn't employ any neat trick (like symmetry exploitation) to make the 
 
 ### TODO
 
-I'd like to mark the region the user is zooming in with color, also the zoom command is a bit bugged, as it allows to flip the rendered region (a tolerated feature atm, but not an intentional one…).
+I'd like to mark the region the user is zooming in with a selection overlay.
 
 Showing the current maximum number of iterations during query and offering the current value as default may also be nice.
 

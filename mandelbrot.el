@@ -60,6 +60,11 @@
   (let ((coordinates (mandelbrot/get-current-x-y)))
     (message "The position is: %s,%s" (car coordinates) (cdr coordinates))))
 
+(defun mandelbrot/rectify-region (x1 x2 y1 y2)
+  (let ((x-coords (if (< x1 x2) (list x1 x2) (list x2 x1)))
+        (y-coords (if (< y1 y2) (list y1 y2) (list y2 y1))))
+    (append x-coords y-coords)))
+
 (defun mandelbrot/zoom ()
   "Zoom in on the region"
   (interactive)
@@ -70,8 +75,8 @@
       (setq end-position (mandelbrot/get-current-x-y))
       (goto-char mandelbrot-start-position)
       (setq start-position (mandelbrot/get-current-x-y))
-      (setq mandelbrot-region (list (car start-position) (car end-position)
-                                    (cdr start-position) (cdr end-position)))
+      (setq mandelbrot-region (mandelbrot/rectify-region (car start-position) (car end-position)
+                                                         (cdr start-position) (cdr end-position)))
       (message "Zooming to: %s" mandelbrot-region)
       (mandelbrot/redraw))))
 

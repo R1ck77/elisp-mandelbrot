@@ -46,8 +46,8 @@
 (defun mandelbrot/mark-start ()
   "Set the starting point for a zoom area"
   (interactive)
-  (setq mandelbrot-start-position (point))
-  (message "Mark start"))
+  (setq mandelbrot-start-position (and (not mandelbrot-start-position)
+                                       (point))))
 
 (defun mandelbrot/get-current-x-y ()
     (let ((row (line-number-at-pos))
@@ -86,6 +86,39 @@
   (setq mandelbrot-iterations maximum-iterations)
   (mandelbrot/redraw))
 
+(defun mandelbrot/clear-background-color ()
+  (setq buffer-read-only nil)
+  (put-text-property (point-min) (point-max)
+                     'font-lock-face (list :background "clear"))
+  (setq buffer-read-only t))
+
+(defun mandelbrot/mark-line ()
+  )
+
+(defun mandelbrot/point-to-coords (point)
+  "Return a cons list with column and line")
+
+(defun mandelbrot/sort-coordinates (point-a point-b)
+  (let ((coords-a (mandelbrot/point-to-coords point-a))
+        (coords-b (mandelbrot/point-to-coords point-b)))
+    (list (cons (min (car coords-a) (car coords-b))
+                (min (cdr coords-a) (cdr coords-b)))
+          (cons (max (car coords-a) (car coords-b))
+                (max (cdr coords-a) (cdr coords-b))))))
+
+(defun mandelbro/mark-selection ()
+  (save-excursion
+    (apply #'mandelbrot/mark-rectangle
+           (mandelbrot/sort-coordinates (point)
+                                        mandelbrot/mark-selection))))
+
+(defun mandelbrot/mark-region-hook ()
+  "Used to highlight the marked region. Very crude ATM."
+  (if mandelbrot-start-position
+      (mandelbrot/mark-selection)
+    (mandelbrot/clear-background-color)))
+  
+
 (defun mandelbrot-mode ()
   "Enter Mandelbrot mode
 
@@ -97,6 +130,7 @@
   (setq mode-name "Mbrot")
   (use-local-map mandelbrot-mode-map)
   (run-mode-hooks 'mandelbrot-mode-hook)
+  (add-hook 'post-command-hook #'mandelbrot/mark-region-hook t t)
   (setq buffer-read-only t)
   (mandelbrot/redraw))
 

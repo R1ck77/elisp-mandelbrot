@@ -16,6 +16,7 @@
   (define-key mandelbrot-mode-map (kbd "z") #'mandelbrot/zoom)
   (define-key mandelbrot-mode-map (kbd "i") #'mandelbrot/change-iterations))
 
+;;; TODO/FIXME this is a mess
 (defvar mandelbrot-start-position)
 (make-variable-buffer-local 'mandelbrot-start-position)
 
@@ -67,33 +68,43 @@
          (y-coords (if (< y1 y2) (list y1 y2) (list y2 y1))))
      (append x-coords y-coords))))
 
-(defun mandelbrot/invalid-regionp (start end)
-  (or (= (car start) (car end))
-      (= (cdr start) (cdr end))))
-
 (defun mandelbrot/zoom ()
   "Zoom in on the region"
   (interactive)
   (if mandelbrot-start-position
    (save-excursion
+;;; TODO/FIXME reorder points!
      (let ((start-position)
            (end-position))
        (setq end-position (mandelbrot/get-current-x-y))
        (goto-char mandelbrot-start-position)
        (setq start-position (mandelbrot/get-current-x-y))
-       (if (mandelbrot/invalid-regionp start-position end-position)
+       (setq mandelbrot-region (mandelbrot/rectify-region (car start-position) (car end-position)
+                                                          (cdr start-position) (cdr end-position)))
+       (if (not mandelbrot-region)
            (message "Invalid region")
-        (setq mandelbrot-region (mandelbrot/rectify-region (car start-position) (car end-position)
-                                                           (cdr start-position) (cdr end-position)))
-        (message "Zooming to: %s" mandelbrot-region)
-        (setq mandelbrot-start-position nil)
-        (mandelbrot/redraw))))
+         (message "Zooming to: %s" mandelbrot-region)
+         (setq mandelbrot-start-position nil)
+         (mandelbrot/redraw))))
    (message "Select a region first")))
 
-(defun mandelbrot/change-iterations (maximum-iterations)
+(defun mandelbrot/string-to-iterations (iteration-string default-value)
+  (if (zerop (length iteration-string))
+      default-value
+    (let ((candidate (truncate (string-to-number iteration-string))))
+      (if (> candidate 10)
+          candidate
+        (error "Invalid value")))))
+
+(defun mandelbrot/change-iterations ()
   "Update the number of iterations"
-  (interactive "NIterations: ")
-  (setq mandelbrot-iterations maximum-iterations)
+  (interactive)
+  (setq mandelbrot-iterations
+        (condition-case nil
+       (mandelbrot/string-to-iterations
+        (read-from-minibuffer (format "Iterations (%d): " mandelbrot-iterations))
+        mandelbrot-iterations)
+     (error (message "Invalid value"))))
   (mandelbrot/redraw))
 
 (defun mandelbrot/clear-properties ()
@@ -103,8 +114,8 @@
                                            :foreground "clear"))
   (setq buffer-read-only t))
 
+;;; TODO/FIXME this is hideous
 (defun mandelbrot/mark-line (line start-row end-row)
-  ;; I am wasting a lot of resources by moving to each line each time instead of just moving forward
   (goto-char (point-min))
   (forward-line (1- line))
   (put-text-property (+ start-row (point)) (+ end-row (point))
@@ -147,7 +158,6 @@
   (if mandelbrot-start-position
       (mandelbrot/mark-selection)))
   
-
 (defun mandelbrot-mode ()
   "Enter Mandelbrot mode
 

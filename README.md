@@ -62,12 +62,6 @@ Many. It's just an exploratory exercise after all.
 
 The code doesn't employ any neat trick (like symmetry exploitation) to make the calculations faster and it's not really optimized, also one could push the C integration much further to employ multi-threaded or SIMD computing etc, but it was never my purpose.
 
-### TODO
-
-I'd like to mark the region the user is zooming in with a selection overlay.
-
-Showing the current maximum number of iterations during query and offering the current value as default may also be nice.
-
 
     
 

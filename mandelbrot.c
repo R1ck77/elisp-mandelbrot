@@ -35,7 +35,6 @@ static void extract_value(emacs_env *env, emacs_value in, complex_value *out)
   out->i = extract_number_as_float(env, cdr);
 }
 
-// TODO/FIXME how about memory?
 static emacs_value mandelbrot_complex_add(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data)
 {
   (void) data;
@@ -63,8 +62,6 @@ static void create_mandelbrot_complex_add(emacs_env *env)
   env->funcall(env, env->intern(env, "defalias"), 2, args);
 }
 
-
-// TODO/FIXME not DRY at all!!
 static emacs_value mandelbrot_complex_sqr(emacs_env *env, ptrdiff_t nargs, emacs_value *args, void *data)
 {
   (void) data;

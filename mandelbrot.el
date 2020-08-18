@@ -16,6 +16,9 @@
   (define-key mandelbrot-mode-map (kbd "z") #'mandelbrot/zoom)
   (define-key mandelbrot-mode-map (kbd "i") #'mandelbrot/change-iterations))
 
+(defvar mandelbrot-start-position)
+(make-variable-buffer-local 'mandelbrot-start-position)
+
 (defmacro mandelbrot/with-read-only-disabled (&rest forms)
   `(let ((buffer-read-only nil))
      ,@forms))
@@ -40,9 +43,6 @@
    (erase-buffer)
    (mandelbrot/draw-4x)))
 
-;;; TODO/FIXME this is a mess
-(defvar mandelbrot-start-position)
-(make-variable-buffer-local 'mandelbrot-start-position)
 (defun mandelbrot/mark-start ()
   "Set the starting point for a zoom area"
   (interactive)
@@ -61,24 +61,34 @@
     (message "The position is: %s,%s" (car coordinates) (cdr coordinates))))
 
 (defun mandelbrot/rectify-region (x1 x2 y1 y2)
-  (let ((x-coords (if (< x1 x2) (list x1 x2) (list x2 x1)))
-        (y-coords (if (< y1 y2) (list y1 y2) (list y2 y1))))
-    (append x-coords y-coords)))
+  (unless (or (= x1 x2)
+              (= y1 y2))
+   (let ((x-coords (if (< x1 x2) (list x1 x2) (list x2 x1)))
+         (y-coords (if (< y1 y2) (list y1 y2) (list y2 y1))))
+     (append x-coords y-coords))))
+
+(defun mandelbrot/invalid-regionp (start end)
+  (or (= (car start) (car end))
+      (= (cdr start) (cdr end))))
 
 (defun mandelbrot/zoom ()
   "Zoom in on the region"
   (interactive)
-  (save-excursion
-    ;;; TODO/FIXME reorder points!
-    (let ((start-position)
-          (end-position))
-      (setq end-position (mandelbrot/get-current-x-y))
-      (goto-char mandelbrot-start-position)
-      (setq start-position (mandelbrot/get-current-x-y))
-      (setq mandelbrot-region (mandelbrot/rectify-region (car start-position) (car end-position)
-                                                         (cdr start-position) (cdr end-position)))
-      (message "Zooming to: %s" mandelbrot-region)
-      (mandelbrot/redraw))))
+  (if mandelbrot-start-position
+   (save-excursion
+     (let ((start-position)
+           (end-position))
+       (setq end-position (mandelbrot/get-current-x-y))
+       (goto-char mandelbrot-start-position)
+       (setq start-position (mandelbrot/get-current-x-y))
+       (if (mandelbrot/invalid-regionp start-position end-position)
+           (message "Invalid region")
+        (setq mandelbrot-region (mandelbrot/rectify-region (car start-position) (car end-position)
+                                                           (cdr start-position) (cdr end-position)))
+        (message "Zooming to: %s" mandelbrot-region)
+        (setq mandelbrot-start-position nil)
+        (mandelbrot/redraw))))
+   (message "Select a region first")))
 
 (defun mandelbrot/change-iterations (maximum-iterations)
   "Update the number of iterations"
@@ -86,17 +96,34 @@
   (setq mandelbrot-iterations maximum-iterations)
   (mandelbrot/redraw))
 
-(defun mandelbrot/clear-background-color ()
+(defun mandelbrot/clear-properties ()
   (setq buffer-read-only nil)
   (put-text-property (point-min) (point-max)
-                     'font-lock-face (list :background "clear"))
+                     'font-lock-face (list :background "clear"
+                                           :foreground "clear"))
   (setq buffer-read-only t))
 
-(defun mandelbrot/mark-line ()
-  )
+(defun mandelbrot/mark-line (line start-row end-row)
+  ;; I am wasting a lot of resources by moving to each line each time instead of just moving forward
+  (goto-char (point-min))
+  (forward-line (1- line))
+  (put-text-property (+ start-row (point)) (+ end-row (point))
+                     'font-lock-face (list :background "red"
+                                           :foreground "blue")))
+
+(defun mandelbrot/mark-rectangle (point-a point-b)
+  (let ((start-column (car point-a))
+        (end-column (car point-b)))
+    (cl-loop for line
+             from (cdr point-a)
+             upto (cdr point-b)
+             do (mandelbrot/mark-line line start-column end-column))))
 
 (defun mandelbrot/point-to-coords (point)
-  "Return a cons list with column and line")
+  "Return a cons list with column and line"
+  (goto-char point)
+  (cons (1+ (- (point) (line-beginning-position)))
+        (line-number-at-pos)))
 
 (defun mandelbrot/sort-coordinates (point-a point-b)
   (let ((coords-a (mandelbrot/point-to-coords point-a))
@@ -106,17 +133,19 @@
           (cons (max (car coords-a) (car coords-b))
                 (max (cdr coords-a) (cdr coords-b))))))
 
-(defun mandelbro/mark-selection ()
+(defun mandelbrot/mark-selection ()
   (save-excursion
+    (setq buffer-read-only nil)
     (apply #'mandelbrot/mark-rectangle
            (mandelbrot/sort-coordinates (point)
-                                        mandelbrot/mark-selection))))
+                                        mandelbrot-start-position))
+    (setq buffer-read-only t)))
 
 (defun mandelbrot/mark-region-hook ()
   "Used to highlight the marked region. Very crude ATM."
+  (mandelbrot/clear-properties)
   (if mandelbrot-start-position
-      (mandelbrot/mark-selection)
-    (mandelbrot/clear-background-color)))
+      (mandelbrot/mark-selection)))
   
 
 (defun mandelbrot-mode ()
